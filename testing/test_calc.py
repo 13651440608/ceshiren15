@@ -2,10 +2,12 @@
 # 日期： 2021/03/31
 import pytest
 import yaml
+from Tools.demo.sortvisu import steps
 
 from pythoncode.calculator import Calculator
 
 
+# 解析测试数据文件
 def get_datas():
     with open("./datas/calc.yml") as f:
         datas = yaml.safe_load(f)
@@ -14,6 +16,22 @@ def get_datas():
     print(add_datas)
     print(add_ids)
     return [add_datas, add_ids]
+
+
+# 解析测试步骤文件
+def setup(addsetupfile, calc, a, b, expect):
+    with open(addsetupfile) as f:
+        setup = yaml.safe_load(f)
+
+    for step in setup:
+        if 'add' == step:
+            print("step: add")
+            result = calc.add(a, b)
+        elif 'add1' == step:
+            print("step: add1")
+            result = calc.add1(a, b)
+
+        assert expect == result
 
 
 # def test_a():
@@ -89,3 +107,12 @@ class TestCalc1:
     #     result = self.calc.div(1,0)
     # except ZeroDivisionError :
     #     print("错误")
+
+    def test_add_setup(self):
+        a = 1
+        b = 1
+        expect = 2
+        setup("./setup/add_setup.yml", self.calc, a, b, expect)
+        # assert 2 ==self.calc.add(1,1)
+        # assert 3 == self.calc.add1(1, 2)
+        # assert 0 == self.calc.add(-1, 1)
